@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto } from './dto/index';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { NotFoundError } from 'rxjs';
 
 
 @Injectable()
@@ -66,6 +67,14 @@ export class AuthService {
     delete returnData.password;
 
     return returnData;
+  }
+
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this._getJwtToken({id: user.id})
+    }
+
   }
 
 
