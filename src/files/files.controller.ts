@@ -5,6 +5,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter, fileNamer } from './helpers/index';
 import { diskStorage } from 'multer';
 import { ConfigService } from '@nestjs/config';
+import { Auth } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
 
 
 @Controller('files')
@@ -25,6 +27,7 @@ export class FilesController {
   }
 
   @Post('product')
+  @Auth(ValidRoles.superUser, ValidRoles.admin)
   @UseInterceptors( FileInterceptor('file', {
     fileFilter: fileFilter,
     //limits: {fileSize: 1000},
